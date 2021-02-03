@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <bitset>
+#include <memory>
 
 #define DEFAULT_ERROR_RATE 0.0001
 
@@ -17,6 +18,8 @@ namespace sanath {
                 // optimal values
                 filter_size = round(-1 * (elements * log2(desired_error)) / log(2));
                 hash_functions = round(-log2(desired_error));
+
+                filter = std::unique_ptr< std::bitset > (new std::bitset<filter_size>);
             }
             bloom_filter(size_t n, double epsilon) {
                 elements = n;
@@ -38,6 +41,21 @@ namespace sanath {
 
             // optimal hash function count
             int hash_functions;
+
+            // pointer to filter
+            std::unique_ptr< std::bitset > filter;
+
+            // hash function (djb2)
+            unsigned long long hash(T *obj, unsigned long long init) {
+                char *ptr = reinterpret_cast<char *>(obj);
+
+                for(size_t i = 0, len = sizeof(*obj); i < len; i++) {
+                    init = ((init << 5) + init) + ptr[i];
+                }
+
+                // scale down
+                return init % filter_size;
+            }
     };
 }
 
