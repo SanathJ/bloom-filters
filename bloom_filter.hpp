@@ -29,7 +29,11 @@ namespace sanath {
                 filter_size = round(-1 * (elements * log2(desired_error)) / log(2));
                 hash_functions = round(-log2(desired_error));
             }
-
+            void insert(T obj) {
+                for(int i = 0; i < hash_functions; i++) {
+                    filter->set(hash(obj, i));
+                }
+            }
         private:
             // assumed maximum elements
             size_t elements;
