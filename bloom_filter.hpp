@@ -13,18 +13,7 @@ namespace sanath
     class bloom_filter 
     {
     public:
-        bloom_filter(size_t n) 
-        {
-            elements = n;
-            desired_error = DEFAULT_ERROR_RATE;
-
-            // optimal values
-            filter_size = round(-1 * (elements * log2(desired_error)) / log(2));
-            hash_functions = round(-log2(desired_error));
-
-            filter = std::unique_ptr< std::bitset > (new std::bitset<filter_size>);
-        }
-        bloom_filter(size_t n, double epsilon) 
+        bloom_filter(size_t n, double epsilon = DEFAULT_ERROR_RATE) 
         {
             elements = n;
             desired_error = epsilon;
