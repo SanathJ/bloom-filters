@@ -14,6 +14,11 @@ namespace sanath
             // lowest number divisible by hash_functions greater than optimal
             filter_size = round((-1 * (elements * log2(desired_error)) / log(2)) / hash_functions) * hash_functions;
             
+            if(filter_size > std::numeric_limits<uint32_t>::max())
+            {
+                throw std::runtime_error("Filter cannot grow to this size");
+            }
+
             filter.resize(filter_size, false);
 
             partition_size = filter_size / hash_functions;

@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <vector>
+#include <limits>
 #include "hasher.hpp"
 
 namespace sanath 
@@ -21,6 +22,10 @@ namespace sanath
             filter_size = round(-1 * (elements * log2(desired_error)) / log(2));
             hash_functions = round(-log2(desired_error));
 
+            if(filter_size > std::numeric_limits<uint32_t>::max())
+            {
+                throw std::runtime_error("Filter cannot grow to this size");
+            }
             filter.resize(filter_size, false);
         }
 
