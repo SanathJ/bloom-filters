@@ -18,7 +18,10 @@ namespace sanath
 
             partition_size = filter_size / hash_functions;
         }
-
+        uint32_t get_partition_size()
+        {
+            return partition_size;
+        }
     protected:
         uint32_t partition_size;
 
