@@ -2,8 +2,8 @@
 #define BLOOM_FILTER_H
 
 #include <cmath>
-#include <bitset>
-#include <memory>
+#include <vector>
+#include "hasher.hpp"
 
 #define DEFAULT_ERROR_RATE 0.0001
 
@@ -21,20 +21,24 @@ namespace sanath
             // optimal values
             filter_size = round(-1 * (elements * log2(desired_error)) / log(2));
             hash_functions = round(-log2(desired_error));
+
+            filter.resize(filter_size, false);
         }
-        void insert(T obj) 
+
+        void insert(T& obj) 
         {
             for(int i = 0; i < hash_functions; i++) 
             {
-                filter->set(hash(obj, i));
+                filter[hash(&obj, i)] = true;
             }
         }
-        bool lookup(T obj) 
+        
+        bool lookup(T& obj) 
         {
             for(int i = 0; i < hash_functions; i++) 
             {
                 // if any of the hashed bits are not set, the object is not present
-                if (!filter->test(hash(obj, i))) 
+                if (!filter[hash(&obj, i)]) 
                 {
                     return false;
                 }
@@ -56,21 +60,19 @@ namespace sanath
         int hash_functions;
 
         // pointer to filter
-        std::unique_ptr< std::bitset > filter;
+        std::vector<bool> filter;
 
-        // hash function (djb2)
-        unsigned long long hash(T *obj, unsigned long long init) 
+        uint32_t hash(T *key, uint32_t k)
         {
-            char *ptr = reinterpret_cast<char *>(obj);
+            hasher hash_provider;
+            
+            uint32_t hash1 = hash_provider.fnv1a(key, sizeof(T));
+            uint32_t hash2 = hash_provider.MurmurHash3(key, sizeof(T));
 
-            for(size_t i = 0, len = sizeof(*obj); i < len; i++) 
-            {
-                init = ((init << 5) + init) + ptr[i];
-            }
-
-            // scale down
-            return init % filter_size;
+            // Kirsch-Mitzenmacher optimization
+            return (hash1 + ((k + 1) * hash2)) % filter_size;
         }
+
     };
 }
 
