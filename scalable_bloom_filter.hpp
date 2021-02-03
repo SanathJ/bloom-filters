@@ -9,13 +9,17 @@ namespace sanath
     class scalable_bloom_filter
     {
     public:
-        scalable_bloom_filter(size_t n, double epsilon = partitioned_bloom_filter<T>::default_error_rate)
+        scalable_bloom_filter(size_t n, double epsilon = partitioned_bloom_filter<T>::default_error_rate / 10,
+                                uint16_t s = 3, double r = 0.9)
         {
             current_series_index = 0;
             current_elements = 0;
-
+            slice_growth_factor = s;
+            tightening_ratio = r;
+            
+            // initial values for first filter
             current_max_size = n;
-            error_rate = (epsilon / 10) * (1 - tightening_ratio);
+            error_rate = epsilon * (1 - tightening_ratio);
             
             filter_series.push_back(partitioned_bloom_filter<T>(current_max_size, error_rate));
         }
@@ -58,9 +62,8 @@ namespace sanath
         size_t current_elements;
         size_t current_max_size;
         double error_rate;
-
-        const uint16_t slice_growth_factor = 2;
-        const double tightening_ratio = 0.8;
+        uint16_t slice_growth_factor;
+        double tightening_ratio;
         
         std::vector< partitioned_bloom_filter<T> > filter_series;
     };
