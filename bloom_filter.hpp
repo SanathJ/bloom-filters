@@ -34,6 +34,17 @@ namespace sanath {
                     filter->set(hash(obj, i));
                 }
             }
+            bool lookup(T obj) {
+                for(int i = 0; i < hash_functions; i++) {
+                    // if any of the hashed bits are not set, the object is not present
+                    if (!filter->test(hash(obj, i))) {
+                        return false;
+                    }
+                }
+                // the object may be present
+                return true;
+            }
+        
         private:
             // assumed maximum elements
             size_t elements;
