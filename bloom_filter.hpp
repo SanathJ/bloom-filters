@@ -47,6 +47,27 @@ namespace sanath
             return true;
         }
     
+        size_t get_size()
+        {
+            return filter_size;
+        }
+
+        size_t get_expected_elements()
+        {
+            return elements;
+        }
+
+        unsigned int get_hash_count()
+        {
+            return hash_functions;
+        }
+
+        double get_expected_error()
+        {
+            return desired_error;
+        }
+
+        
     private:
         // assumed maximum elements
         size_t elements;
@@ -57,7 +78,7 @@ namespace sanath
         size_t filter_size;
 
         // optimal hash function count
-        int hash_functions;
+        unsigned int hash_functions;
 
         // pointer to filter
         std::vector<bool> filter;
