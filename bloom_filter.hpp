@@ -5,15 +5,14 @@
 #include <vector>
 #include "hasher.hpp"
 
-#define DEFAULT_ERROR_RATE 0.0001
-
 namespace sanath 
 {
     template<typename T>
     class bloom_filter 
     {
     public:
-        bloom_filter(size_t n, double epsilon = DEFAULT_ERROR_RATE) 
+        static constexpr double default_error_rate = 0.0001;
+        bloom_filter(size_t n, double epsilon = default_error_rate) 
         {
             elements = n;
             desired_error = epsilon;
