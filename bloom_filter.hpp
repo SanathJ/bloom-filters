@@ -19,8 +19,8 @@ namespace sanath
             desired_error = epsilon;
 
             // optimal values
-            filter_size = round(-1 * (elements * log2(desired_error)) / log(2));
-            hash_functions = round(-log2(desired_error));
+            filter_size = ceil(-1 * (elements * log2(desired_error)) / log(2));
+            hash_functions = ceil(-log2(desired_error));
 
             if(filter_size > std::numeric_limits<uint32_t>::max())
             {
