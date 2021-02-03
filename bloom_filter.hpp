@@ -68,7 +68,7 @@ namespace sanath
         }
 
         
-    private:
+    protected:
         // assumed maximum elements
         size_t elements;
         
