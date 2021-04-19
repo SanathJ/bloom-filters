@@ -84,7 +84,7 @@ namespace sanath
         // optimal hash function count
         unsigned int hash_functions;
 
-        // pointer to filter
+        // filter
         std::vector<bool> filter;
 
         uint32_t hash(T *key, uint32_t k)
