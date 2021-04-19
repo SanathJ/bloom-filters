@@ -5,11 +5,11 @@
 
 namespace sanath
 {
-    template<typename T, class C = bloom_filter<T> >
+    template<typename T, template<typename> class C = bloom_filter >
     class scalable_bloom_filter
     {
     public:
-        scalable_bloom_filter(size_t n, double epsilon = C::default_error_rate / 10,
+        scalable_bloom_filter(size_t n, double epsilon = C<T>::default_error_rate / 10,
                                 uint16_t s = 3, double r = 0.9)
         {
             current_series_index = 0;
@@ -21,7 +21,7 @@ namespace sanath
             current_max_size = n;
             error_rate = epsilon * (1 - tightening_ratio);
             
-            filter_series.push_back(C(current_max_size, error_rate));
+            filter_series.push_back(C<T>(current_max_size, error_rate));
         }
 
         void insert(T& obj) 
@@ -33,7 +33,7 @@ namespace sanath
                 current_max_size *= slice_growth_factor;
                 error_rate *= (1 - tightening_ratio);
                 
-                filter_series.push_back(C(current_max_size, error_rate));
+                filter_series.push_back(C<T>(current_max_size, error_rate));
                 current_series_index++;
             }
 
@@ -65,7 +65,7 @@ namespace sanath
         uint16_t slice_growth_factor;
         double tightening_ratio;
         
-        std::vector< C > filter_series;
+        std::vector< C<T> > filter_series;
     };
 }
 
